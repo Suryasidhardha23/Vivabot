@@ -23,7 +23,7 @@ class MockBrain:
         self.keys = API_KEYS
         self.current_key_index = 0
         # Recommended: Use specific model version for stability
-        self.model_name = "gemini-1.5-flash" 
+        self.model_name = "gemini-flash-latest" 
 
     def _rotate_key(self):
         """Switches to the next API Key in the list"""
