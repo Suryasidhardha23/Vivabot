@@ -4,7 +4,7 @@ cachetools==6.2.4
 certifi==2025.11.12
 charset-normalizer==3.4.4
 colorama==0.4.6
-Django==6.0
+Django==5.0.2
 google-ai-generativelanguage==0.6.15
 google-api-core==2.28.1
 google-api-python-client==2.187.0
