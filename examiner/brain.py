@@ -7,9 +7,9 @@ import os
 # 1. Load keys safely and remove any that are missing (None)
 API_KEYS = [
     key for key in [
-        os.environ.get("GEMINI_KEY_1"),
-        os.environ.get("GEMINI_KEY_2"),
-        os.environ.get("GEMINI_KEY_3")
+        os.environ.get("GEMINI_API_KEY1"),
+        os.environ.get("GEMINI_API_KEY2"),
+        os.environ.get("GEMINI_API_KEY3")
     ]
     if key is not None  # <--- CRITICAL: filters out None values
 ]
