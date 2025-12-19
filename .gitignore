@@ -1,0 +1,17 @@
+# .gitignore
+
+# 1. Environment files (CRITICAL: Hides your keys)
+.env
+.venv
+venv/
+env/
+
+# 2. Python compiled files (Junk files)
+__pycache__/
+*.pyc
+
+# 3. Database (Optional, but good practice if using local db)
+db.sqlite3
+
+# 4. OS system files
+.DS_Store
