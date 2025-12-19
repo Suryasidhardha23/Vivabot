@@ -1,21 +1,29 @@
 import google.generativeai as genai
 import time
-import random
 import re
+import random
+import os
 
-# --- 🔑 ADD YOUR KEYS HERE ---
-# Create 2-3 projects in Google AI Studio to get unique keys
+# 1. Load keys safely and remove any that are missing (None)
 API_KEYS = [
-    "AIzaSyDfaeJcCU5Lygd6r86yatD_v5gxj7bbAhM",
-    "AIzaSyC8xSZT6rlPd_bRj4tqEDLMzRAzyt6VQjU", 
-    "AIzaSyDo79rvHeDrwYuOxFvVezDypi-_fYXtico"
+    key for key in [
+        os.environ.get("GEMINI_KEY_1"),
+        os.environ.get("GEMINI_KEY_2"),
+        os.environ.get("GEMINI_KEY_3")
+    ]
+    if key is not None  # <--- CRITICAL: filters out None values
 ]
+
+# Optional: Stop app from starting if NO keys are found at all
+if not API_KEYS:
+    raise RuntimeError("No Gemini API keys found! Set GEMINI_KEY_1, etc. in environment.")
 
 class MockBrain:
     def __init__(self):
         self.keys = API_KEYS
         self.current_key_index = 0
-        self.model_name = "gemini-flash-latest"
+        # Recommended: Use specific model version for stability
+        self.model_name = "gemini-1.5-flash" 
 
     def _rotate_key(self):
         """Switches to the next API Key in the list"""
@@ -24,7 +32,8 @@ class MockBrain:
 
     def _generate_content_safe(self, prompt):
         """Wrapper to call Gemini with Key Rotation"""
-        for attempt in range(len(self.keys) + 1):
+        # Attempt loop: Try each key once before giving up
+        for attempt in range(len(self.keys)):
             try:
                 # Configure active key
                 active_key = self.keys[self.current_key_index]
@@ -37,12 +46,14 @@ class MockBrain:
 
             except Exception as e:
                 error_msg = str(e)
+                # Check for quota limits (429) or Service Unavailable (503)
                 if "429" in error_msg or "ResourceExhausted" in error_msg:
                     self._rotate_key()
                     time.sleep(1) # Brief pause
                 else:
-                    raise e # Real error, don't retry
-        return "Error: All keys exhausted."
+                    raise e # Real error (like bad prompt), don't retry
+                    
+        return "Error: All API keys exhausted quota."
 
     def generate_question(self, topic, context_text=None):
         try:
